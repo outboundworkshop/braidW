@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: your-dockerhub-username/braidw:latest
+    image: kimsee/braidw:latest
     ports:
       - "8080:8080"
     environment:
