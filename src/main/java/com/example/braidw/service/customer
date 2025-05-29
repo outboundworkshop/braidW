@@ -1,0 +1,55 @@
+package com.example.braidw.service;
+
+import com.example.braidw.entity.CustomerVisit;
+import com.example.braidw.repository.CustomerVisitRepository;
+import lombok.Builder;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class CustomerVisitService {
+    
+    private final CustomerVisitRepository customerVisitRepository;
+    
+    public List<String> getCustomerTags() {
+        return customerVisitRepository.findAllCustomerTags();
+    }
+    
+    public CustomerVisitStats getVisitStats(LocalDateTime startDate, LocalDateTime endDate) {
+        List<CustomerVisit> visits = customerVisitRepository.findByVisitDateBetweenOrderByVisitDateAsc(startDate, endDate);
+        
+        return CustomerVisitStats.builder()
+                .dates(visits.stream()
+                        .map(visit -> visit.getVisitDate().format(DateTimeFormatter.ofPattern("MM/dd")))
+                        .collect(Collectors.toList()))
+                .newCustomers(visits.stream()
+                        .map(CustomerVisit::getNewCustomerCount)
+                        .collect(Collectors.toList()))
+                .returningCustomers(visits.stream()
+                        .map(CustomerVisit::getReturningCustomerCount)
+                        .collect(Collectors.toList()))
+                .build();
+    }
+    
+    @Data
+    @Builder
+    public static class CustomerVisitStats {
+        private List<String> dates;
+        private List<Integer> newCustomers;
+        private List<Integer> returningCustomers;
+    }
+    
+    @Transactional
+    public void recordVisit(CustomerVisit visit) {
+        customerVisitRepository.save(visit);
+    }
+} 
