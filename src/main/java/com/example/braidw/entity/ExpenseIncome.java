@@ -31,4 +31,24 @@ public class ExpenseIncome {
     
     @Column(name = "previous_income")
     private Long previousIncome;   // 전월 수입액
+
+    @Transient
+    public int getExpenseRatio() {
+        return (int) ((expense * 100.0) / previousExpense);
+    }
+    
+    @Transient
+    public int getIncomeRatio() {
+        return (int) ((income * 100.0) / previousIncome);
+    }
+    
+    @Transient
+    public int getExpenseChange() {
+        return getExpenseRatio() - 100;
+    }
+    
+    @Transient
+    public int getIncomeChange() {
+        return getIncomeRatio() - 100;
+    }
 } 

@@ -57,4 +57,18 @@ public class SupportController {
         supportService.deleteSupport(id);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/recommend")
+    public ResponseEntity<List<SupportResponse>> recommendSupports(
+            @RequestParam(required = false) String industry,
+            @RequestParam(required = false) String scale,
+            @RequestParam(required = false) Integer foundedYear,
+            @RequestParam(required = false) String revenueRange) {
+        return ResponseEntity.ok(supportService.recommendSupports(industry, scale, foundedYear, revenueRange));
+    }
+
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<SupportResponse> getSupportDetail(@PathVariable Long id) {
+        return ResponseEntity.ok(supportService.getSupport(id));
+    }
 } 

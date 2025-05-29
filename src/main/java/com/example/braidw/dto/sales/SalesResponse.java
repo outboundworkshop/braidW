@@ -12,6 +12,7 @@ public class SalesResponse {
     private SalesGraph salesGraph;
     private ExpenseIncome expenseIncome;
     private CustomerVisit customerVisit;
+    private List<KpiStatus> kpiStatus;
 
     @Data
     @Builder
@@ -47,5 +48,13 @@ public class SalesResponse {
         private List<String> dates;
         private List<Integer> newCustomers;
         private List<Integer> returningCustomers;
+    }
+
+    @Data
+    @Builder
+    public static class KpiStatus {
+        private String kpi;
+        private int target;
+        private int current;
     }
 } 

@@ -46,6 +46,17 @@ public class Support {
     private List<String> reasons;
     
     private String image;
+
+    // 추천 검색을 위한 필드 추가
+    private String industry;  // 산업 분류
+    
+    private String scale;  // 기업 규모
+    
+    @Column(name = "revenue_range")
+    private String revenueRange;  // 매출 범위
+    
+    @Column(name = "preferred_established_years")
+    private Integer preferredEstablishedYears; // 설립 후 우대 연수 (null이면 무관)
     
     public enum SupportType {
         LOAN("대출"),

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,47 @@ public class SupportService {
     public SupportResponse getSupport(Long id) {
         Support support = findSupportById(id);
         return SupportResponse.from(support);
+    }
+
+    public List<SupportResponse> recommendSupports(String industry, String scale, Integer foundedYear, String revenueRange) {
+        List<Support> supports = supportRepository.findAll();
+        List<SupportResponse> result = new ArrayList<>();
+
+        for (Support support : supports) {
+            List<String> reasons = new ArrayList<>();
+            boolean match = true;
+
+            if (industry != null && industry.equals(support.getIndustry())) {
+                reasons.add("업종(" + industry + ") 조건 부합");
+            } else if (industry != null) {
+                match = false;
+            }
+
+            if (scale != null && scale.equals(support.getScale())) {
+                reasons.add("사업 규모(" + scale + ") 조건 부합");
+            } else if (scale != null) {
+                match = false;
+            }
+
+            if (foundedYear != null && foundedYear.equals(support.getEstablishedYear())) {
+                reasons.add(foundedYear + "년 설립 조건 부합");
+            } else if (foundedYear != null) {
+                match = false;
+            }
+
+            if (revenueRange != null && revenueRange.equals(support.getRevenueRange())) {
+                reasons.add("매출액 " + revenueRange + " 조건 부합");
+            } else if (revenueRange != null) {
+                match = false;
+            }
+
+            if (match) {
+                SupportResponse response = SupportResponse.from(support);
+                response.setRecommendationReason(String.join("\n", reasons));
+                result.add(response);
+            }
+        }
+        return result;
     }
 
     @Transactional

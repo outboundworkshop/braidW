@@ -1,7 +1,7 @@
-package com.example.braidw.service;
+package com.example.braidw.service.customer;
 
 import com.example.braidw.entity.CustomerVisit;
-import com.example.braidw.repository.CustomerVisitRepository;
+import com.example.braidw.repository.customer.CustomerVisitRepository;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
