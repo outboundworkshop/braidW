@@ -1,7 +1,7 @@
 package com.example.braidw.security.service;
 
 import com.example.braidw.entity.User;
-import com.example.braidw.repository.UserRepository;
+import com.example.braidw.repository.auth.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

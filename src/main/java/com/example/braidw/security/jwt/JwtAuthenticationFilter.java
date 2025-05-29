@@ -1,6 +1,6 @@
 package com.example.braidw.security.jwt;
 
-import com.example.braidw.dto.LoginRequest;
+import com.example.braidw.dto.auth.LoginRequest;
 import com.example.braidw.security.service.UserDetailsImpl;
 import com.example.braidw.security.service.UserDetailsServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
