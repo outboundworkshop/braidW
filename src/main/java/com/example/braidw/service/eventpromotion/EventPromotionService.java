@@ -2,7 +2,9 @@ package com.example.braidw.service.eventpromotion;
 
 import com.example.braidw.dto.eventpromotion.EventPromotionRequest;
 import com.example.braidw.entity.EventPromotion;
-import com.example.braidw.repository.EventPromotionRepository;
+import com.example.braidw.entity.User;
+import com.example.braidw.repository.eventpromotion.EventPromotionRepository;
+import com.example.braidw.repository.auth.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,9 +17,12 @@ public class EventPromotionService {
     @Autowired
     private EventPromotionRepository eventPromotionRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Transactional
     public Long createEvent(EventPromotionRequest request) {
-        EventPromotion event = EventPromotion.builder()
+             EventPromotion event = EventPromotion.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .startDate(LocalDate.parse(request.getStartDate()))

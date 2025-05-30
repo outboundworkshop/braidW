@@ -31,6 +31,10 @@ public class Notification {
     
     private boolean isRead;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+    
     public enum NotificationType {
         INVENTORY,      // 재고 관련
         SYSTEM,        // 시스템 관련

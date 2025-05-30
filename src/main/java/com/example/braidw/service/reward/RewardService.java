@@ -21,26 +21,19 @@ public class RewardService {
     private final RewardRepository rewardRepository;
     private final UserRepository userRepository;
 
-    public RewardResponse createReward(RewardRequest request) {
-        SecurityUtils.validateUser(request.getUserId());
-        
-        User user = userRepository.findById(request.getUserId())
+    public RewardResponse createReward(RewardRequest request, String userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
         int points = calculatePoints(request.getAction());
-        
         Reward reward = Reward.builder()
                 .user(user)
                 .points(points)
                 .description(request.getAction())
                 .build();
-
         rewardRepository.save(reward);
-
         int currentPoints = rewardRepository.findByUser(user).stream()
                 .mapToInt(Reward::getPoints)
                 .sum();
-
         return RewardResponse.builder()
                 .message("포인트가 적립되었습니다.")
                 .currentPoints(currentPoints)

@@ -3,13 +3,17 @@ package com.example.braidw.service.support;
 import com.example.braidw.dto.support.SupportResponse;
 import com.example.braidw.entity.Support;
 import com.example.braidw.entity.Support.SupportType;
+import com.example.braidw.entity.User;
 import com.example.braidw.repository.support.SupportRepository;
+import com.example.braidw.repository.auth.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,44 +44,60 @@ public class SupportService {
     }
 
     public List<SupportResponse> recommendSupports(String industry, String scale, Integer foundedYear, String revenueRange) {
-        List<Support> supports = supportRepository.findAll();
-        List<SupportResponse> result = new ArrayList<>();
+        int currentYear = java.time.LocalDate.now().getYear();
+        Integer companyAge = (foundedYear != null) ? (currentYear - foundedYear) : null;
+        List<Support> supports = supportRepository.findByRecommendationCriteria(industry, scale, companyAge, revenueRange);
+        List<SupportResponseWithMatch> temp = new ArrayList<>();
 
         for (Support support : supports) {
             List<String> reasons = new ArrayList<>();
-            boolean match = true;
+            int matchCount = 0;
 
             if (industry != null && industry.equals(support.getIndustry())) {
                 reasons.add("업종(" + industry + ") 조건 부합");
-            } else if (industry != null) {
-                match = false;
+                matchCount++;
             }
-
             if (scale != null && scale.equals(support.getScale())) {
                 reasons.add("사업 규모(" + scale + ") 조건 부합");
-            } else if (scale != null) {
-                match = false;
+                matchCount++;
             }
-
-            if (foundedYear != null && foundedYear.equals(support.getEstablishedYear())) {
-                reasons.add(foundedYear + "년 설립 조건 부합");
-            } else if (foundedYear != null) {
-                match = false;
+            if (companyAge != null && support.getPreferredEstablishedYears() != null && companyAge >= support.getPreferredEstablishedYears()) {
+                reasons.add("설립 " + support.getPreferredEstablishedYears() + "년 이상 기업 우대 조건");
+                matchCount++;
             }
-
             if (revenueRange != null && revenueRange.equals(support.getRevenueRange())) {
                 reasons.add("매출액 " + revenueRange + " 조건 부합");
-            } else if (revenueRange != null) {
-                match = false;
+                matchCount++;
             }
 
-            if (match) {
-                SupportResponse response = SupportResponse.from(support);
-                response.setRecommendationReason(String.join("\n", reasons));
-                result.add(response);
-            }
+            SupportResponse response = SupportResponse.from(support);
+            response.setRecommendationReason(String.join("\n", reasons));
+            temp.add(new SupportResponseWithMatch(response, matchCount, support.getId()));
         }
+
+        // 중복 제거 (id 기준)
+        Map<Long, SupportResponseWithMatch> unique = new LinkedHashMap<>();
+        for (SupportResponseWithMatch s : temp) {
+            unique.put(s.id, s);
+        }
+
+        // 일치 개수로 내림차순 정렬
+        List<SupportResponse> result = unique.values().stream()
+                .sorted((a, b) -> Integer.compare(b.matchCount, a.matchCount))
+                .map(s -> s.response)
+                .toList();
         return result;
+    }
+
+    private static class SupportResponseWithMatch {
+        SupportResponse response;
+        int matchCount;
+        Long id;
+        SupportResponseWithMatch(SupportResponse response, int matchCount, Long id) {
+            this.response = response;
+            this.matchCount = matchCount;
+            this.id = id;
+        }
     }
 
     @Transactional

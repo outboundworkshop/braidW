@@ -1,7 +1,9 @@
 package com.example.braidw.service.customer;
 
 import com.example.braidw.entity.CustomerVisit;
+import com.example.braidw.entity.User;
 import com.example.braidw.repository.customer.CustomerVisitRepository;
+import com.example.braidw.repository.auth.UserRepository;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class CustomerVisitService {
     
     private final CustomerVisitRepository customerVisitRepository;
+    private final UserRepository userRepository;
     
     public List<String> getCustomerTags() {
         return customerVisitRepository.findAllCustomerTags();
@@ -49,7 +52,10 @@ public class CustomerVisitService {
     }
     
     @Transactional
-    public void recordVisit(CustomerVisit visit) {
+    public void recordVisit(CustomerVisit visit, String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        visit.setUser(user);
         customerVisitRepository.save(visit);
     }
 } 

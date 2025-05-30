@@ -24,7 +24,7 @@ public class RewardController {
         String userId = SecurityUtils.getCurrentUserId();
         request.setUserId(userId);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(rewardService.createReward(request));
+                .body(rewardService.createReward(request,userId));
     }
 
     @GetMapping("/points")

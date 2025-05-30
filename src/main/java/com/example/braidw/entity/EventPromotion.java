@@ -24,4 +24,5 @@ public class EventPromotion {
 
     private LocalDate startDate;
     private LocalDate endDate;
+
 } 

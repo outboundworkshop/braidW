@@ -1,4 +1,4 @@
-package com.example.braidw.repository;
+package com.example.braidw.repository.eventpromotion;
 
 import com.example.braidw.entity.EventPromotion;
 import org.springframework.data.jpa.repository.JpaRepository;

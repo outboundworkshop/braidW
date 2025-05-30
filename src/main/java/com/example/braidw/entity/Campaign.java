@@ -35,6 +35,10 @@ public class Campaign {
     @Enumerated(EnumType.STRING)
     private CampaignType type;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+    
     public enum CampaignType {
         CAMPAIGN,
         NOTIFICATION

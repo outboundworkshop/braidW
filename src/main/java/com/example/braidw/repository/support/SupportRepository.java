@@ -16,15 +16,15 @@ public interface SupportRepository extends JpaRepository<Support, Long> {
     List<Support> findAllByOrderByRecommendationDesc();
 
     @Query("SELECT s FROM Support s WHERE " +
-           "(:industry IS NULL OR s.industry = :industry) AND " +
-           "(:scale IS NULL OR s.scale = :scale) AND " +
-           "(:foundedYear IS NULL OR s.foundedYear <= :foundedYear) AND " +
-           "(:revenueRange IS NULL OR s.revenueRange = :revenueRange) " +
+           "(:industry IS NOT NULL AND s.industry = :industry) OR " +
+           "(:scale IS NOT NULL AND s.scale = :scale) OR " +
+           "(:companyAge IS NOT NULL AND s.preferredEstablishedYears IS NOT NULL AND :companyAge >= s.preferredEstablishedYears) OR " +
+           "(:revenueRange IS NOT NULL AND s.revenueRange = :revenueRange) " +
            "ORDER BY s.recommendation DESC")
     List<Support> findByRecommendationCriteria(
             @Param("industry") String industry,
             @Param("scale") String scale,
-            @Param("foundedYear") Integer foundedYear,
+            @Param("companyAge") Integer companyAge,
             @Param("revenueRange") String revenueRange
     );
 } 

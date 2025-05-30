@@ -25,4 +25,8 @@ public class Sales {
     private Integer orderCount;  // 주문 건수
     private Double averageOrderAmount;  // 평균 구매액
     private Double conversionRate;  // 전환율
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 } 

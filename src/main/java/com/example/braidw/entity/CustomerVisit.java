@@ -29,4 +29,8 @@ public class CustomerVisit {
     @CollectionTable(name = "customer_tags", joinColumns = @JoinColumn(name = "visit_id"))
     @Column(name = "tag")
     private List<String> customerTags;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 } 
