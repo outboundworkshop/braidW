@@ -88,6 +88,19 @@ jobs:
 
     - name: Deploy to EC2
       run: |
+        ssh ec2 "if ! command -v docker-compose &> /dev/null; then \
+          echo 'docker-compose not found, attempting to install...'; \
+          REMOTE_OS=\\$(uname -s | tr '[:upper:]' '[:lower:]'); \
+          REMOTE_ARCH=\\$(uname -m); \
+          echo \\"Attempting to download docker-compose for OS: \${REMOTE_OS}, ARCH: \${REMOTE_ARCH}\\"; \
+          sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-\${REMOTE_OS}-\${REMOTE_ARCH} -o /usr/local/bin/docker-compose && \
+          sudo chmod +x /usr/local/bin/docker-compose && \
+          echo 'docker-compose installed successfully:' && \
+          /usr/local/bin/docker-compose --version; \
+        else \
+          echo 'docker-compose is already installed:'; \
+          docker-compose --version; \
+        fi"
         scp docker-compose.yml ec2:~/
         ssh ec2 "docker-compose pull"
         ssh ec2 "docker-compose stop app || true"
