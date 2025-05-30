@@ -93,7 +93,16 @@ jobs:
           REMOTE_OS=\\$(uname -s | tr '[:upper:]' '[:lower:]'); \
           REMOTE_ARCH=\\$(uname -m); \
           echo \\"Attempting to download docker-compose for OS: \${REMOTE_OS}, ARCH: \${REMOTE_ARCH}\\"; \
-          sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-\${REMOTE_OS}-\${REMOTE_ARCH} -o /usr/local/bin/docker-compose && \
+          sudo mkdir -p /usr/local/bin && \
+          echo \\"Attempting to download docker-compose to /usr/local/bin/docker-compose\\" && \
+          sudo curl -LfS https://github.com/docker/compose/releases/latest/download/docker-compose-\${REMOTE_OS}-\${REMOTE_ARCH} -o /usr/local/bin/docker-compose && \
+          echo \\"curl command completed. Checking file...\\" && \
+          if [ ! -s /usr/local/bin/docker-compose ]; then \
+            echo \\"Error: /usr/local/bin/docker-compose was not created or is empty after download.\\"; \
+            ls -l /usr/local/bin/; \
+            exit 1; \
+          fi && \
+          echo \\"File /usr/local/bin/docker-compose downloaded successfully.\\" && \
           sudo chmod +x /usr/local/bin/docker-compose && \
           echo 'docker-compose installed successfully:' && \
           /usr/local/bin/docker-compose --version; \
