@@ -23,12 +23,16 @@ public class CustomerVisitService {
     private final CustomerVisitRepository customerVisitRepository;
     private final UserRepository userRepository;
     
-    public List<String> getCustomerTags() {
-        return customerVisitRepository.findAllCustomerTags();
+    public List<String> getCustomerTags(String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        return customerVisitRepository.findAllCustomerTags(user);
     }
     
-    public CustomerVisitStats getVisitStats(LocalDateTime startDate, LocalDateTime endDate) {
-        List<CustomerVisit> visits = customerVisitRepository.findByVisitDateBetweenOrderByVisitDateAsc(startDate, endDate);
+    public CustomerVisitStats getVisitStats(String userId, LocalDateTime startDate, LocalDateTime endDate) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        List<CustomerVisit> visits = customerVisitRepository.findByVisitDateBetweenAndUserOrderByVisitDateAsc(user, startDate, endDate);
         
         return CustomerVisitStats.builder()
                 .dates(visits.stream()

@@ -20,6 +20,10 @@ public class ExpenseIncome {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Column(nullable = false)
     private YearMonth month;  // 해당 월
 
@@ -34,11 +38,17 @@ public class ExpenseIncome {
 
     @Transient
     public int getExpenseRatio() {
+        if (expense == null || previousExpense == null || previousExpense == 0L) {
+            return 0; // 또는 적절한 기본값 또는 예외 처리
+        }
         return (int) ((expense * 100.0) / previousExpense);
     }
     
     @Transient
     public int getIncomeRatio() {
+        if (income == null || previousIncome == null || previousIncome == 0L) {
+            return 0; // 또는 적절한 기본값 또는 예외 처리
+        }
         return (int) ((income * 100.0) / previousIncome);
     }
     

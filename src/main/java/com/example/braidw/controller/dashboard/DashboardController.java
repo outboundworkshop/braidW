@@ -5,6 +5,7 @@ import com.example.braidw.dto.sales.SalesResponse;
 import com.example.braidw.dto.support.SupportResponse;
 import com.example.braidw.service.sales.SalesService;
 import com.example.braidw.service.support.SupportService;
+import com.example.braidw.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,11 @@ public class DashboardController {
 
     @GetMapping("/summary")
     public ResponseEntity<SalesResponse> getSummary() {
-        return ResponseEntity.ok(salesService.getSalesAnalytics("day"));
+        String userId = SecurityUtils.getCurrentUserId();
+        if (userId == null) {
+            return ResponseEntity.status(401).build();
+        }
+        return ResponseEntity.ok(salesService.getSalesAnalytics(userId, "day"));
     }
 
 //    @GetMapping("/campaigns")

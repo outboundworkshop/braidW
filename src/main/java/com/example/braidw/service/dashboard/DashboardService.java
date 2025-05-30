@@ -23,7 +23,7 @@ public class DashboardService {
         // In a real scenario, userId might be used to filter data in underlying services
         // For now, assuming services fetch all relevant data or handle user scoping internally
         
-        SalesResponse salesSummary = salesService.getSalesAnalytics("day"); // Example period
+        SalesResponse salesSummary = salesService.getSalesAnalytics(userId,"day"); // Example period
         List<SupportResponse> recommendedSupports = supportService.recommendSupports(null, null, null, null); // Example: no specific criteria
         // List<CampaignResponse> activeCampaigns = campaignService.getActiveCampaigns(userId); // Example
 
