@@ -67,8 +67,4 @@ public class SupportController {
         return ResponseEntity.ok(supportService.recommendSupports(industry, scale, foundedYear, revenueRange));
     }
 
-    @GetMapping("/detail/{id}")
-    public ResponseEntity<SupportResponse> getSupportDetail(@PathVariable Long id) {
-        return ResponseEntity.ok(supportService.getSupport(id));
-    }
 } 
